@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
-import { generateMnemonic, mnemonicToSeedSync } from "bip39";
 
 import { AiFillEyeInvisible } from "react-icons/ai";
-import { useAccount } from "../../utils";
+import { generateMnemonic } from "bip39";
 import { useState } from "react";
 import { useWalletContext } from "../../context/WalletProvider";
 
 export const SecretRecoveryPhase = ({ nextStep }) => {
   const { wallet, updateWallet } = useWalletContext();
-  const { createAccount, createMultipleAccounts } = useAccount();
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -16,12 +14,6 @@ export const SecretRecoveryPhase = ({ nextStep }) => {
       const mnemonic = await generateMnemonic();
       updateWallet({
         mnemonic,
-      });
-
-      createMultipleAccounts({
-        wallets: ["SOLANA", "ETHEREUM"],
-        mnemonic,
-        accountNumber: 0
       });
     };
 

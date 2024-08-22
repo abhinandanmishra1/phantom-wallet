@@ -8,7 +8,7 @@ import { useWalletContext } from "./context/WalletProvider";
 function App() {
   const { wallet } = useWalletContext();
 
-  const CREATE_MNEMONIC_VIEW = !wallet?.mnemonic;
+  const CREATE_MNEMONIC_VIEW = wallet?.accounts?.length === 0;
   const WALLET_VIEW = !CREATE_MNEMONIC_VIEW;
   
   return (
