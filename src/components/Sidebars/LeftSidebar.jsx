@@ -18,14 +18,14 @@ export const LeftSideBar = ({ open, toggleSidebar, createAccount }) => {
         open ? "translate-x-1" : "-translate-x-16 invisible -z-0"
       } absolute z-20 text-white flex flex-col gap-2 items-center py-4 px-2`}
     >
-      <div className="hover:bg-white hover:text-black rounded-lg cursor-pointer p-1">
+      <div className="hover:bg-white hover:text-black rounded-lg cursor-pointer p-1 h-8">
         <IoIosArrowRoundBack
           onClick={toggleSidebar}
           size={28}
           className="text-gray-500 font-bold"
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-auto flex-1 scroll-">
         {accounts.map(({ name }, index) => {
           return (
             <AccounDetails accountNumber={index}>
@@ -48,10 +48,14 @@ export const LeftSideBar = ({ open, toggleSidebar, createAccount }) => {
           );
         })}
       </div>
+      <div className="h-28"></div>
       <div className="fixed bottom-0 text-gray-500 h-32 w-full border-t-[1px] left-0 border-[#333] flex flex-col gap-2 items-center p-2">
         <div
           className="hover:bg-white p-2 rounded-lg hover:text-black"
-          onClick={createAccount}
+          onClick={() => {
+            toggleSidebar();
+            createAccount();
+          }}
         >
           <FaPlus size={16} className="cursor-pointer" />
         </div>

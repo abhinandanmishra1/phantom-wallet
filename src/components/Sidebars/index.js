@@ -1,2 +1,2 @@
 export * from "./LeftSidebar";
-export * from "./BottomSidebar";
+export * from "./BottomSidebarWrapper";

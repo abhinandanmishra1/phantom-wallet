@@ -1,48 +1,55 @@
-import { BottomSidebar, LeftSideBar } from "../Sidebars";
-import { IoIosArrowRoundBack, IoIosSettings } from "react-icons/io";
 import React, { useState } from "react";
 
-import { FaPlus } from "react-icons/fa";
-import { MdEdit } from "react-icons/md";
+import { AddWallet } from "./AddNewWallet";
+import { BottomSidebarWrapper } from "../Sidebars";
+import { LeftSideBar } from "../Sidebars";
 import { WalletHeader } from "./WalletHeader";
 import { WalletMain } from "./WalletMain";
 import { WallletNavigation } from "./WalletNavigation";
-import { useWalletContext } from "../../context";
+import { useStore } from "../../store";
 
 export const Wallet = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [bottonSidebarOpen, setBottomSidebarOpen] = useState(false);
+  const {
+    mainSidebarOpen,
+    toggleMainSidebar,
+    bottomSidebarOpen,
+    toggleBottomSidebar,
+  } = useStore((state) => state);
 
   const [activePage, setActivePage] = useState("dashboard");
-
-  const toggleSidebar = () => {
-    setSidebarOpen((open) => !open);
-  };
-
-  const toggleBottomSidebar = () => {
-    setSidebarOpen(false);
-    setBottomSidebarOpen((open) => !open);
-  };
+  
   return (
     <>
       <div
         className={`h-full flex flex-col relative ${
-          sidebarOpen ? "blur-sm pointer-events-none" : "blur-0"
+          mainSidebarOpen ? "blur-sm pointer-events-none" : "blur-0"
         }`}
-
         onClick={() => {
-          if(sidebarOpen) {
-            toggleSidebar();
+          if (mainSidebarOpen) {
+            toggleMainSidebar();
           }
         }}
       >
-        <WalletHeader open={sidebarOpen} toggleSidebar={toggleSidebar} />
+        <WalletHeader
+          open={mainSidebarOpen}
+          toggleSidebar={toggleMainSidebar}
+        />
         <WalletMain page={activePage} />
         <WallletNavigation active={activePage} navigate={setActivePage} />
       </div>
 
-      <LeftSideBar open={sidebarOpen} toggleSidebar={toggleSidebar} createAccount={toggleBottomSidebar} />
-      <BottomSidebar open={bottonSidebarOpen} toggleSidebar={toggleBottomSidebar} />
+      <LeftSideBar
+        open={mainSidebarOpen}
+        toggleSidebar={toggleMainSidebar}
+        createAccount={toggleBottomSidebar}
+      />
+      <BottomSidebarWrapper
+        open={bottomSidebarOpen}
+        toggleSidebar={toggleBottomSidebar}
+        title="Add New Wallet"
+      >
+        <AddWallet toggleSidebar={toggleBottomSidebar} />
+      </BottomSidebarWrapper>
     </>
   );
 };
