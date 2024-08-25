@@ -11,7 +11,10 @@ export const useNavigateToPages = () => {
     openPage(PAGE_TYPES.IMPORT_PRIVATE_KEY);
   };
 
-  console.log(page)
+  const navigateToSendAmountPage = () => {
+    openPage(PAGE_TYPES.SEND_AMOUNT_PAGE);
+  }
+
   const navigateToNone = () => {
     openPage(PAGE_TYPES.NONE);
   };
@@ -20,6 +23,7 @@ export const useNavigateToPages = () => {
     page,
     navigateToCreateWalletPage,
     navigateToImportPrivateKeyPage,
+    navigateToSendAmountPage,
     navigateToNone
   };
 };

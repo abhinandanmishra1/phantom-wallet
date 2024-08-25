@@ -18,23 +18,27 @@ export const BottomSidebarWrapper = ({
   toggleSidebar,
   title,
   children,
+  showHeader = true,
+  className = ""
 }) => {
   return (
     <>
       <div
         className={`bottom-0 h-full left-0 rounded-lg bg-[#222222] duration-500 w-full ${
           open ? "translate-y-0" : "translate-y-full -z-0"
-        } absolute z-20 text-white flex flex-col gap-2 items-center px-2`}
+        } ${className} absolute z-20 text-white flex flex-col gap-2 items-center px-2`}
       >
-        <div className="h-14 text-white flex justify-between p-2 items-center text-sm border-b border-b-[#333] w-full">
-          <RxCross1
-            onClick={toggleSidebar}
-            size={16}
-            className="text-gray-500 font-bold cursor-pointer"
-          />
-          <h1 className="text-lg">{title}</h1>
-          <div></div>
-        </div>
+        {showHeader && (
+          <div className="h-14 text-white flex justify-between p-2 items-center text-sm border-b border-b-[#333] w-full">
+            <RxCross1
+              onClick={toggleSidebar}
+              size={16}
+              className="text-gray-500 font-bold cursor-pointer"
+            />
+            <h1 className="text-lg">{title}</h1>
+            <div></div>
+          </div>
+        )}
 
         {children}
       </div>
