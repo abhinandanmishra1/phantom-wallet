@@ -50,31 +50,104 @@ export const useAccount = () => {
 
     const { publicKey, privateKey } =
       WALLETE_CREATE_FUNCTION[walletType](derivedSeed);
-    
+
     return {
       publicKey,
       privateKey,
     };
   };
 
-  const createMultipleAccounts = ({ wallets = ["SOLANA", "ETHEREUM"], mnemonic, accountNumber, name }) => {
+  const createMultipleAccounts = ({
+    wallets = ["SOLANA", "ETHEREUM"],
+    mnemonic,
+    accountNumber,
+    name,
+  }) => {
     accounts[accountNumber] = {
       wallets: [],
-      name: name ?? `Account ${accountNumber+1}`
+      name: name ?? `Account ${accountNumber + 1}`,
     };
-    
+
     wallets.forEach((walletType, index) => {
       console.log(walletType, index);
-      const {publicKey, privateKey} = createAccount({ walletType, mnemonic, accountNumber });
-  
-      accounts[accountNumber].wallets.push({ publicKey, privateKey, type: walletType});
+      const { publicKey, privateKey } = createAccount({
+        walletType,
+        mnemonic,
+        accountNumber,
+      });
+
+      accounts[accountNumber].wallets.push({
+        publicKey,
+        privateKey,
+        type: walletType,
+      });
     });
-    
+
     updateWallet({ accounts });
+  };
+
+  const importAccountFromPrivateKey = ({
+    privateKeyRaw,
+    accountNumber,
+    name
+  }) => {
+    accounts[accountNumber] = {
+      wallets: [],
+      name: name ?? `Account ${accountNumber + 1}`,
+    };
+    
+    let privateKey;
+    if (privateKeyRaw instanceof Uint8Array) {
+      privateKey = Buffer.from(privateKeyRaw).toString("hex");
+    } else {
+      privateKey = privateKeyRaw;
+    }
+
+    let blockchainType;
+    let publicKey;
+
+    if (privateKey.length === 64) {
+      // Possible Ethereum private key
+      try {
+        const wallet = new ethers.Wallet(privateKey);
+        publicKey = wallet.address;
+        blockchainType = "ETHEREUM";
+      } catch (err) {
+        console.log("Invalid Ethereum key");
+      }
+    }
+
+    if (!publicKey && (privateKey.length === 128 || privateKey.length === 64)) {
+      // Possible Solana private key
+      try {
+        const keypair = Keypair.fromSecretKey(
+          Uint8Array.from(Buffer.from(privateKey, "hex"))
+        );
+        publicKey = keypair.publicKey.toBase58();
+        blockchainType = "SOLANA";
+      } catch (err) {
+        console.log("Invalid Solana key");
+      }
+    }
+
+    if (!publicKey) {
+      console.log("Invalid private key or unsupported blockchain type.");
+    }else {
+      accounts[accountNumber].wallets.push({
+        publicKey,
+        privateKey,
+        type: blockchainType
+      })
+
+      updateWallet({accounts})
+    }
+
+    return { publicKey, privateKey, type: blockchainType };
   };
 
   return {
     createAccount,
     createMultipleAccounts,
+    importAccountFromPrivateKey
   };
 };

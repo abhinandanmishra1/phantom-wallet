@@ -11,7 +11,7 @@ export const STEPS = {
 export const WALLET_TYPES = {
   SOLANA: "SOLANA",
   ETHEREUM: "ETHEREUM",
-}
+};
 
 export const BLOCKCHAIN_TO_PATH = {
   SOLANA: "501",
@@ -22,7 +22,7 @@ export const PAGE_TYPES = {
   NONE: "NONE",
   CREATE_WALLET: "CREATE_WALLET",
   IMPORT_PRIVATE_KEY: "IMPORT_PRIVATE_KEY",
-  SEND_AMOUNT_PAGE: "SEND_AMOUNT_PAGE"
+  SEND_AMOUNT_PAGE: "SEND_AMOUNT_PAGE",
 };
 
 export const SIDEBAR_TYPES = {
@@ -33,9 +33,7 @@ export const SIDEBAR_TYPES = {
   NONE: "NONE",
 };
 
-export const PAGE_TITLE = {
-  
-}
+export const PAGE_TITLE = {};
 
 export const CURRENCY = {
   SOLANA: "SOL",

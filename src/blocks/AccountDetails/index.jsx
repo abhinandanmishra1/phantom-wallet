@@ -31,8 +31,11 @@ const WalletDetails = ({ type, publicKey }) => {
       <Icon size={16} />
       <p className="capitalize">{type.toLowerCase()}</p>
       {!copied && (
-        <p className="flex items-center gap-1 cursor-pointer" onClick={copyToClipboard}>
-          {startHalf}...{endHalf} <BsCopy  />
+        <p
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={copyToClipboard}
+        >
+          {startHalf}...{endHalf} <BsCopy />
         </p>
       )}
 
@@ -51,7 +54,12 @@ export const AccounDetails = ({ accountNumber, children, place = "top" }) => {
   return (
     <>
       <div data-tooltip-id={`account-${accountNumber}`}>{children}</div>
-      <Tooltip clickable className="group" id={`account-${accountNumber}`} place={place}>
+      <Tooltip
+        clickable
+        className="group z-40"
+        id={`account-${accountNumber}`}
+        place={place}
+      >
         <div className="hover:visible flex flex-col gap-2 bg-black p-4 rounded-lg min-w-[220px]">
           {wallets.map(({ type, publicKey }) => (
             <WalletDetails key={publicKey} publicKey={publicKey} type={type} />

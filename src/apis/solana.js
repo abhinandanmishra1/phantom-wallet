@@ -21,12 +21,7 @@ export class SolanaConnection {
     if (publicKey && privateKey) {
       this.publicKey = new PublicKey(publicKey);
 
-      // Decode the private key string into a Uint8Array
       const secretKeyArray = bs58.decode(privateKey);
-
-      console.log(secretKeyArray);
-
-      // Create a Keypair from the decoded secret key
       this.keypair = Keypair.fromSecretKey(secretKeyArray);
     }
   }
@@ -55,6 +50,41 @@ export class SolanaConnection {
     };
 
     const { data } = await axios.post(this.url, payload);
+    
     return data;
+  }
+
+  async getAllTransactionsByPublicKey(publicKey) {
+    // const publicKey = new PublicKey(publicKeyBase58);
+
+    const signatureInfos = await this.connection.getSignaturesForAddress(
+      publicKey,
+      {
+        limit: 1000,
+      }
+    );
+
+    let signatureList = signatureInfos.map(info=>info.signature);
+    let transactionDetails = await this.connection.getParsedTransactions(signatureList, {maxSupportedTransactionVersion:0});
+
+    const transactions = signatureInfos.map((info, i) => {
+      const date = new Date(info.blockTime * 1000);
+      
+      return {
+        signature: info.signature,
+        date,
+        confirmationStatus: info.confirmationStatus,
+        transactionInstructions: transactionDetails[i].transaction.message.instructions
+      };
+    });
+
+    return transactions;
+  }
+
+  async getTransactionDetails(signature) {
+    const transaction = await this.connection.getParsedConfirmedTransaction(
+      signature
+    );
+    return transaction;
   }
 }

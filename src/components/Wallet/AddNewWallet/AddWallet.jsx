@@ -37,10 +37,6 @@ export const AddWallet = () => {
 
   const RightSideBarOpen =
     CREATE_WALLET_PAGE_OPEN || IMPORT_PRIVATE_KEY_PAGE_OPEN;
-  console.log({
-    CREATE_WALLET_PAGE_OPEN,
-    IMPORT_PRIVATE_KEY_PAGE_OPEN,
-  });
 
   return (
     <>

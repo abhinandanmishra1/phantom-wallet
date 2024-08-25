@@ -3,8 +3,11 @@ import React, { useEffect, useState } from "react";
 
 import { BottomSidebarWrapper } from "../../Sidebars";
 import { MdSwapHoriz } from "react-icons/md";
+import { ReceiveAmount } from "./ReceiveAmount";
 import { SendAmountOptions } from "./SendAmount/SendAmountOptions";
+import { convertToUsd } from "../../../utils";
 import { useCurrentAccount } from "../../../hooks/useCurrentAccount";
+import { useEthereumGetBalance } from "../../../hooks/ethereum";
 import { useNavigateToPages } from "../../../hooks";
 import { useSolanaGetBalance } from "../../../hooks/solana";
 
@@ -24,26 +27,55 @@ const WalletDashboard = ({
   incrementPercentage = "0.00",
   incrementBalance = "0.00",
 }) => {
-  const {
-    SOLANA: { publicKey },
-  } = useCurrentAccount();
-  // const publicKey = "AJpPHpD6Gfh7jRcgLp6hhpyt7YwmC29HGbg2xkFikZPd"
-  const { data: balance } = useSolanaGetBalance(publicKey);
+  const { SOLANA, ETHEREUM } = useCurrentAccount();
+  const [balanceInUSD, setBalanceInUSD] = useState(null);
 
-  const {navigateToSendAmountPage} = useNavigateToPages();
+  const { data: solBalance } = useSolanaGetBalance(SOLANA?.publicKey);
 
-  const [bottomSidebarOpen, setSidebarOpen] = useState(false);
+  const { data: ethBalance } = useEthereumGetBalance(ETHEREUM?.publicKey);
 
-  const toggleSidebar = () => {
-    setSidebarOpen((open) => !open);
+  useEffect(() => {
+    convertToUsd({
+      sol: solBalance || 0,
+      eth: ethBalance || 0,
+    }).then((usd) => {
+      setBalanceInUSD(usd);
+    });
+  }, [ethBalance, solBalance]);
+
+  const { navigateToSendAmountPage } = useNavigateToPages();
+
+  const SIDEBAR_TYPES = {
+    SEND_AMOUNT: "SEND_AMOUNT",
+    RECIEVE_AMOUNT: "RECIEVE_AMOUNT",
+    NONE: "NONE",
   };
 
+  const [sidebarType, setSidebarTypeOpen] = useState(SIDEBAR_TYPES.NONE);
+
+  const closeSidebar = () => {
+    setSidebarTypeOpen(SIDEBAR_TYPES.NONE);
+  };
+
+  const openSendAmountSidebar = () => {
+    setSidebarTypeOpen(SIDEBAR_TYPES.SEND_AMOUNT);
+  };
+
+  const openReceiveAmountSidebar = () => {
+    setSidebarTypeOpen(SIDEBAR_TYPES.RECIEVE_AMOUNT);
+  };
+
+  const SEND_AMOUNT_SIDEBAR_OPEN = sidebarType === SIDEBAR_TYPES.SEND_AMOUNT;
+  const RECEIVE_AMOUNT_SIDEBAR_OPEN =
+    sidebarType === SIDEBAR_TYPES.RECIEVE_AMOUNT;
+  const bottomSidebarOpen =
+    SEND_AMOUNT_SIDEBAR_OPEN || RECEIVE_AMOUNT_SIDEBAR_OPEN;
   return (
     <>
       <div className="w-full flex flex-col">
         <div className="w-full flex flex-col items-center p-4 gap-2 mt-4">
           <div className="text-white text-4xl font-semibold">
-            ${balance?.toFixed(2) || "0.00"}
+            ${balanceInUSD?.toFixed(2) || "0.00"}
           </div>
           <div className="w-full flex justify-center gap-2 text-gray-400 items-center">
             <p>+${incrementBalance}</p>
@@ -54,8 +86,16 @@ const WalletDashboard = ({
         </div>
 
         <div className="flex space-x-4 p-4">
-          <ActionButton Icon={FiPlus} label="Receive" />
-          <ActionButton Icon={FiSend} label="Send" onClick={toggleSidebar} />
+          <ActionButton
+            Icon={FiPlus}
+            label="Receive"
+            onClick={openReceiveAmountSidebar}
+          />
+          <ActionButton
+            Icon={FiSend}
+            label="Send"
+            onClick={openSendAmountSidebar}
+          />
           <ActionButton Icon={MdSwapHoriz} label="Swap" />
           <ActionButton Icon={FiDollarSign} label="Buy" />
         </div>
@@ -63,10 +103,19 @@ const WalletDashboard = ({
       <BottomSidebarWrapper
         showHeader={false}
         open={bottomSidebarOpen}
-        toggleSidebar={toggleSidebar}
+        toggleSidebar={closeSidebar}
         className="h-[90%]"
       >
-        <SendAmountOptions toggleSidebar={toggleSidebar} balance={balance} />
+        {SEND_AMOUNT_SIDEBAR_OPEN && (
+          <SendAmountOptions
+            toggleSidebar={closeSidebar}
+            balance={balanceInUSD}
+          />
+        )}
+
+        {RECEIVE_AMOUNT_SIDEBAR_OPEN && (
+          <ReceiveAmount toggleSidebar={closeSidebar} />
+        )}
       </BottomSidebarWrapper>
     </>
   );

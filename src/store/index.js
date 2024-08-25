@@ -4,8 +4,8 @@ import { create } from "zustand";
 
 export const useStore = create((set) => ({
   page: PAGE_TYPES.NONE,
-  walletType: WALLET_TYPES.SOLANA,
-  setWalletType: (walletType) => set({ walletType }),
+  selectedWallet: null,
+  setSelectedWallet: (wallet) => set({selectedWallet: wallet}),
   openPage: (page) => set(() => ({ page })),
   mainSidebarOpen: false,
   toggleMainSidebar: () =>

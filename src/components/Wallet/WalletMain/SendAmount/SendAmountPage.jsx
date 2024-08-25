@@ -1,16 +1,21 @@
-import { CURRENCY, Images } from "../../../../constants";
+import { CURRENCY, Images, WALLET_TYPES } from "../../../../constants";
 import React, { useState } from "react";
 
 import { HiAtSymbol } from "react-icons/hi";
 import { useNavigateToPages } from "../../../../hooks";
+import { useSendEthereumMutation } from "../../../../hooks/ethereum";
 import { useSendSolanaMutation } from "../../../../hooks/solana";
 import { useStore } from "../../../../store";
 
 export const SendAmountPage = ({ balance }) => {
-  const sendAmountMutation = useSendSolanaMutation();
+  const sendSolsMutation = useSendSolanaMutation();
+  const sendEthsMutation = useSendEthereumMutation();
   
-  const { navigateToSendAmountPage, navigateToNone } = useNavigateToPages();
-  const { walletType } = useStore((state) => state);
+  const { navigateToNone } = useNavigateToPages();
+  const { selectedWallet: {
+    type: walletType,
+  } } = useStore((state) => state);
+  
   const imageSrc = Images[walletType];
   const currency = CURRENCY[walletType];
 
@@ -26,10 +31,18 @@ export const SendAmountPage = ({ balance }) => {
       publicKey,
       amount,
     })
-    sendAmountMutation.mutate({
-      publicKey,
-      amount,
-    });
+    
+    if (walletType === WALLET_TYPES.SOLANA) {
+      sendSolsMutation.mutate({
+        publicKey,
+        amount,
+      });
+    }else if(walletType === WALLET_TYPES.ETHEREUM) {
+      sendEthsMutation.mutate({
+        publicKey,
+        amount,
+      });
+    }
   }
 
   return (

@@ -3,6 +3,8 @@ import { useStore } from "../store";
 
 export const useNavigateToPages = () => {
   const { page, openPage } = useStore();
+  const {selectedWallet, setSelectedWallet} = useStore(state => state);
+  
   const navigateToCreateWalletPage = () => {
     openPage(PAGE_TYPES.CREATE_WALLET);
   };
@@ -11,7 +13,11 @@ export const useNavigateToPages = () => {
     openPage(PAGE_TYPES.IMPORT_PRIVATE_KEY);
   };
 
-  const navigateToSendAmountPage = () => {
+  const navigateToSendAmountPage = (walletType, publicKey) => {
+    setSelectedWallet({
+      type: walletType,
+      publicKey
+    })
     openPage(PAGE_TYPES.SEND_AMOUNT_PAGE);
   }
 

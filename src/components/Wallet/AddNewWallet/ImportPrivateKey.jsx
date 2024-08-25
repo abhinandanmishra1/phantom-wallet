@@ -12,7 +12,7 @@ export const ImportPrivateKeyPage = () => {
 
   const { navigateToNone } = useNavigateToPages();
 
-  const { createMultipleAccounts } = useAccount();
+  const { importAccountFromPrivateKey } = useAccount();
 
   const accountNumber = accounts.length;
 
@@ -20,14 +20,16 @@ export const ImportPrivateKeyPage = () => {
   const [privateKey, setPrivateKey] = useState(null);
 
   const createWallet = () => {
-    createMultipleAccounts({
-      wallets: ["SOLANA", "ETHEREUM"],
-      mnemonic,
-      accountNumber,
-      name,
-    });
+    importAccountFromPrivateKey(
 
-    setCurrentAccount(accountNumber);
+        {
+          privateKeyRaw: privateKey,
+          accountNumber,
+          name,
+        }
+    )
+
+    // setCurrentAccount(accountNumber);
     navigateToNone();
     toggleSidebar();
   };

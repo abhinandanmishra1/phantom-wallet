@@ -1,19 +1,25 @@
+import { CURRENCY, PAGE_TYPES } from "../../../../constants";
 import React, { useState } from "react";
 
-import { PAGE_TYPES } from "../../../../constants";
 import { RightSidebarWrapper } from "../../../Sidebars/RightSidebarWrapper";
 import { SendAmountPage } from "./SendAmountPage";
 import { WalletType } from "../WalletType";
-import { useCurrentAccount } from "../../../../hooks/useCurrentAccount";
+import {
+  useGetCurrentWallet,
+} from "../../../../hooks/useCurrentAccount";
 import { useNavigateToPages } from "../../../../hooks";
-import { useSolanaGetBalance } from "../../../../hooks/solana";
+import { useStore } from "../../../../store";
 
 export const SendAmountOptions = ({ toggleSidebar, balance }) => {
+  const wallets = useGetCurrentWallet();
+  const {selectedWallet} = useStore(state => state);
+  
   const { navigateToSendAmountPage, page, navigateToNone } =
     useNavigateToPages();
 
   const toggleRightSidebar = () => {
     setRightSidebarOpen((open) => !open);
+    toggleSidebar();
   };
 
   const SEND_AMOUNT_PAGE_OPEN = page === PAGE_TYPES.SEND_AMOUNT_PAGE;
@@ -21,17 +27,17 @@ export const SendAmountOptions = ({ toggleSidebar, balance }) => {
   return (
     <div className="w-full p-2 h-full relative flex flex-col justify-between items-center">
       <div className="w-full space-y-2 flex-1">
-        <WalletType
-          onClick={navigateToSendAmountPage}
-          type="SOLANA"
-          balanceInCurrency={balance}
-          showDollar={false}
-        />
-        <WalletType
-          type="ETHEREUM"
-          balanceInCurrency={balance}
-          showDollar={false}
-        />
+        {wallets.map((wallet) => {
+          return (
+            <WalletType
+              onClick={() => {
+                navigateToSendAmountPage(wallet.type, wallet.publicKey);
+              }}
+              type={wallet.type}
+              showDollar={false}
+            />
+          );
+        })}
       </div>
       <button
         onClick={toggleSidebar}
@@ -41,7 +47,7 @@ export const SendAmountOptions = ({ toggleSidebar, balance }) => {
       </button>
 
       <RightSidebarWrapper
-        title="Send SOL"
+        title={`Send ${CURRENCY[selectedWallet?.type]}`}
         open={SEND_AMOUNT_PAGE_OPEN}
         toggleSidebar={navigateToNone}
       >

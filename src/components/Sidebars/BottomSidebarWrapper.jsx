@@ -19,12 +19,12 @@ export const BottomSidebarWrapper = ({
   title,
   children,
   showHeader = true,
-  className = ""
+  className = "h-full"
 }) => {
   return (
     <>
       <div
-        className={`bottom-0 h-full left-0 rounded-lg bg-[#222222] duration-500 w-full ${
+        className={`bottom-0 left-0 rounded-lg bg-[#222222] duration-500 w-full ${
           open ? "translate-y-0" : "translate-y-full -z-0"
         } ${className} absolute z-20 text-white flex flex-col gap-2 items-center px-2`}
       >
