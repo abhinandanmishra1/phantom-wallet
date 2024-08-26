@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import { BsCopy } from "react-icons/bs";
 import { IoCopyOutline } from "react-icons/io5";
+import { splitPublicKey } from "../../../utils";
 import { useEthereumGetBalance } from "../../../hooks/ethereum";
 import { useSolanaGetBalance } from "../../../hooks/solana";
 import { useStore } from "../../../store";
@@ -16,27 +17,21 @@ export const WalletType = ({
   onClick = () => {},
   showDollar = true,
 }) => {
-  const { setWalletType } = useStore((state) => state);
   const [copied, setCopied] = useState(false);
-  
+
   const imageSrc = Images[type];
   const currency = CURRENCY[type];
 
   const { data: solanaBalance } = useSolanaGetBalance(publicKey, type);
-  const { data: ethereumBalance } = useEthereumGetBalance(publicKey, type)
+  const { data: ethereumBalance } = useEthereumGetBalance(publicKey, type);
 
-  const balance = type === WALLET_TYPES.SOLANA ? solanaBalance : ethereumBalance;
-  
-  const startHalf = publicKey?.startsWith("0x")
-  ? publicKey?.substring(0, 6)
-  : publicKey?.substring(0, 4);
-const endHalf = publicKey?.startsWith("0x")
-  ? publicKey?.substring(6, 10)
-  : publicKey?.substring(4, 8);
+  const balance =
+    type === WALLET_TYPES.SOLANA ? solanaBalance : ethereumBalance;
+
+  const { startHalf, endHalf } = splitPublicKey(publicKey);
 
   const next = () => {
     onClick();
-    setWalletType(type);
   };
 
   return (
@@ -56,26 +51,24 @@ const endHalf = publicKey?.startsWith("0x")
             </p>
           )}
 
-          {
-            publicKey && !balanceInCurrency && (
-              <p className="text-sm text-gray-500">
-                {
-                  copied? "Copied" : startHalf+"..."+endHalf
-                }
-              </p>
-            )
-          }
+          {publicKey && !balanceInCurrency && (
+            <p className="text-sm text-gray-500">
+              {copied ? "Copied" : startHalf + "..." + endHalf}
+            </p>
+          )}
         </div>
       </div>
       {publicKey && !showDollar && (
         <div className="bg-[#181818] h-8 w-8 rounded-[50%] grid place-items-center p-2">
-          <IoCopyOutline onClick={() => {
-            navigator.clipboard.writeText(publicKey);
-            setCopied(true);
-            setTimeout(() => {
-              setCopied(false)
-            }, 1000)
-          }} />
+          <IoCopyOutline
+            onClick={() => {
+              navigator.clipboard.writeText(publicKey);
+              setCopied(true);
+              setTimeout(() => {
+                setCopied(false);
+              }, 1000);
+            }}
+          />
         </div>
       )}
       {showDollar && (

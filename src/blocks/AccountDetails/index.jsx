@@ -3,6 +3,7 @@ import { SiEthereum, SiSolana } from "react-icons/si";
 
 import { BsCopy } from "react-icons/bs";
 import { Tooltip } from "react-tooltip";
+import { splitPublicKey } from "../../utils";
 import { useWalletContext } from "../../context";
 
 const Icons = {
@@ -14,12 +15,7 @@ const WalletDetails = ({ type, publicKey }) => {
   const [copied, setCopied] = useState(false);
 
   const Icon = Icons[type];
-  const startHalf = publicKey.startsWith("0x")
-    ? publicKey.substring(0, 6)
-    : publicKey.substring(0, 4);
-  const endHalf = publicKey.startsWith("0x")
-    ? publicKey.substring(6, 10)
-    : publicKey.substring(4, 8);
+  const { startHalf, endHalf} = splitPublicKey(publicKey);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(publicKey);

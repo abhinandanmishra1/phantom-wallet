@@ -28,7 +28,7 @@ export const LeftSideBar = ({ open, toggleSidebar, createAccount }) => {
       <div className="flex flex-col gap-2 overflow-auto flex-1 scroll-">
         {accounts.map(({ name }, index) => {
           return (
-            <AccounDetails accountNumber={index}>
+            <AccounDetails key={crypto.randomUUID()}  accountNumber={index}>
               <div
                 className="flex flex-col items-center gap-[2px] group cursor-pointer"
                 onClick={() => {

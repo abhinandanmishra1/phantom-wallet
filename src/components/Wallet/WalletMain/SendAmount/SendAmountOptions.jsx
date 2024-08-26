@@ -8,17 +8,17 @@ import {
   useGetCurrentWallet,
 } from "../../../../hooks/useCurrentAccount";
 import { useNavigateToPages } from "../../../../hooks";
+import { useSolanaGetBalance } from "../../../../hooks/solana";
 import { useStore } from "../../../../store";
 
 export const SendAmountOptions = ({ toggleSidebar, balance }) => {
   const wallets = useGetCurrentWallet();
   const {selectedWallet} = useStore(state => state);
-  
   const { navigateToSendAmountPage, page, navigateToNone } =
     useNavigateToPages();
 
-  const toggleRightSidebar = () => {
-    setRightSidebarOpen((open) => !open);
+  const closeSidebars = () => {
+    navigateToNone();
     toggleSidebar();
   };
 
@@ -30,6 +30,7 @@ export const SendAmountOptions = ({ toggleSidebar, balance }) => {
         {wallets.map((wallet) => {
           return (
             <WalletType
+              key={wallet.publicKey}
               onClick={() => {
                 navigateToSendAmountPage(wallet.type, wallet.publicKey);
               }}
@@ -52,7 +53,7 @@ export const SendAmountOptions = ({ toggleSidebar, balance }) => {
         toggleSidebar={navigateToNone}
       >
         {SEND_AMOUNT_PAGE_OPEN && (
-          <SendAmountPage toggleSidebar={toggleRightSidebar} />
+          <SendAmountPage wallet={selectedWallet} toggleSidebar={closeSidebars} />
         )}
       </RightSidebarWrapper>
     </div>

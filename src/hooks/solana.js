@@ -2,7 +2,9 @@ import { useMutation, useQuery } from "react-query";
 
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { WALLET_TYPES } from "../constants";
+import { useNavigateToPages } from "./useNavigateToPages";
 import { useSolanaConnection } from "./useSolanaConnection";
+import { useStore } from "../store";
 
 export const useSolanaGetBalance = (publicKeyBase58, type = WALLET_TYPES.SOLANA) => {
   const { connection } = useSolanaConnection();
@@ -20,16 +22,16 @@ export const useSolanaGetBalance = (publicKeyBase58, type = WALLET_TYPES.SOLANA)
   });
 };
 
-export const useSendSolanaMutation = () => {
+export const useSendSolanaMutation = (toggleSidebar) => {
   const { connection } = useSolanaConnection();
 
   return useMutation({
     mutationFn: async ({ publicKey: receiverPublicKey, amount: sols }) => {
-      console.log("INSIDE MUTATION", receiverPublicKey, sols);
       await connection.transferSol(receiverPublicKey, sols);
     },
     onSuccess: () => {
       alert("success");
+      toggleSidebar?.();
     },
     onError: () => {
       alert("error");

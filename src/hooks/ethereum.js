@@ -16,7 +16,7 @@ export const useEthereumGetBalance = (publicKey, type = WALLET_TYPES.ETHEREUM) =
   });
 };
 
-export const useSendEthereumMutation = () => {
+export const useSendEthereumMutation = (toggleSidebar) => {
   const { connection } = useEthereumConnection();
 
   return useMutation({
@@ -26,6 +26,7 @@ export const useSendEthereumMutation = () => {
     },
     onSuccess: () => {
       alert("Transaction successful!");
+      toggleSidebar();
     },
     onError: () => {
       alert("Transaction failed.");

@@ -25,7 +25,7 @@ export class EthereumConnection {
 
   async getBalance(publicKey) {
     const balance = await this.provider.getBalance(publicKey);
-    return ethers.utils.formatEther(balance);
+    return Number(ethers.utils.formatEther(balance));
   }
 
   async getAllTransactionsByPublicKey(publicKey) {
