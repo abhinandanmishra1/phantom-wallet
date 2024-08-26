@@ -5,7 +5,7 @@ import { BottomSidebarWrapper } from "../../Sidebars";
 import { MdSwapHoriz } from "react-icons/md";
 import { ReceiveAmount } from "./ReceiveAmount";
 import { SendAmountOptions } from "./SendAmount/SendAmountOptions";
-import { convertToUsd } from "../../../utils";
+import { useCurrencyConvert } from "../../../utils";
 import { useCurrentAccount } from "../../../hooks/useCurrentAccount";
 import { useEthereumGetBalance } from "../../../hooks/ethereum";
 import { useNavigateToPages } from "../../../hooks";
@@ -29,6 +29,7 @@ const WalletDashboard = ({
 }) => {
   const { SOLANA, ETHEREUM } = useCurrentAccount();
   const [balanceInUSD, setBalanceInUSD] = useState(null);
+  const { convertToUsd } = useCurrencyConvert();
 
   const { data: solBalance } = useSolanaGetBalance(SOLANA?.publicKey);
 

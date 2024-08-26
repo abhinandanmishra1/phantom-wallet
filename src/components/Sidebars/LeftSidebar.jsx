@@ -25,7 +25,7 @@ export const LeftSideBar = ({ open, toggleSidebar, createAccount }) => {
           className="text-gray-500 font-bold"
         />
       </div>
-      <div className="flex flex-col gap-2 overflow-auto flex-1 scroll-">
+      <div className="flex flex-col gap-2 overflow-y-auto overflow-x-hidden flex-1">
         {accounts.map(({ name }, index) => {
           return (
             <AccounDetails key={crypto.randomUUID()}  accountNumber={index}>
@@ -40,8 +40,8 @@ export const LeftSideBar = ({ open, toggleSidebar, createAccount }) => {
                   {name[0]}
                   {index + 1}
                 </div>
-                <p className="group-hover:text-[#ffffffdd] text-[10px] text-[#ab9ff2]">
-                  {name}
+                <p className="group-hover:text-[#ffffffdd] text-[10px] text-[#ab9ff2] text-ellipsis overflow-hidden">
+                  {[...name].splice(0, 10).join("")}
                 </p>
               </div>
             </AccounDetails>

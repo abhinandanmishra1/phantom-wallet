@@ -1,6 +1,6 @@
 import { CURRENCY, Images, WALLET_TYPES } from "../../../constants";
 import React, { useEffect, useState } from "react";
-import { convertToUsd, splitPublicKey } from "../../../utils";
+import { splitPublicKey, useCurrencyConvert } from "../../../utils";
 
 import { BsCopy } from "react-icons/bs";
 import { IoCopyOutline } from "react-icons/io5";
@@ -17,6 +17,7 @@ export const WalletType = ({
   onClick = () => {},
   showDollar = true,
 }) => {
+  const { convertToUsd } = useCurrencyConvert();
   const [copied, setCopied] = useState(false);
 
   const imageSrc = Images[type];
