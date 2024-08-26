@@ -11,8 +11,8 @@ async function getConversionRates() {
 }
 
 export async function convertToUsd({
-  eth,
-  sol
+  eth = 0,
+  sol = 0
 }) {
   try {
     const rates = await getConversionRates();
@@ -20,7 +20,11 @@ export async function convertToUsd({
     const ethUsdValue = eth * rates.ethToUsd;
     const solUsdValue = sol * rates.solToUsd;
     
-    return ethUsdValue + solUsdValue
+    return {
+      ethUsdValue,
+      solUsdValue,
+      total: ethUsdValue + solUsdValue
+    }
   } catch (error) {
     console.error("Error fetching conversion rates:", error);
     return null;

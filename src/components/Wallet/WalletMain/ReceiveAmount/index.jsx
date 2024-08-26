@@ -9,7 +9,6 @@ export const ReceiveAmount = ({ toggleSidebar }) => {
     <div className="w-full p-2 h-full relative flex flex-col justify-between items-center">
       <div className="w-full space-y-2 flex-1">
         {wallets.map(({ type, publicKey }) => {
-          console.log({ type, publicKey });
           return (
             <WalletType type={type} publicKey={publicKey} showDollar={false} />
           );

@@ -21,7 +21,6 @@ export const useSendEthereumMutation = (toggleSidebar) => {
 
   return useMutation({
     mutationFn: async ({ publicKey: receiverPublicKey, amount: eth }) => {
-      console.log("INSIDE MUTATION", receiverPublicKey, eth);
       await connection.transferEth(receiverPublicKey, eth);
     },
     onSuccess: () => {

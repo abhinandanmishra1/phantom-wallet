@@ -38,8 +38,8 @@ const WalletDashboard = ({
     convertToUsd({
       sol: solBalance || 0,
       eth: ethBalance || 0,
-    }).then((usd) => {
-      setBalanceInUSD(usd);
+    }).then(({total}) => {
+      setBalanceInUSD(total);
     });
   }, [ethBalance, solBalance]);
 

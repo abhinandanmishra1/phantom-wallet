@@ -69,7 +69,6 @@ export const useAccount = () => {
     };
 
     wallets.forEach((walletType, index) => {
-      console.log(walletType, index);
       const { publicKey, privateKey } = createAccount({
         walletType,
         mnemonic,

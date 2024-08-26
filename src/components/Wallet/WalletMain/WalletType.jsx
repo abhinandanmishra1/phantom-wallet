@@ -1,9 +1,9 @@
 import { CURRENCY, Images, WALLET_TYPES } from "../../../constants";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { convertToUsd, splitPublicKey } from "../../../utils";
 
 import { BsCopy } from "react-icons/bs";
 import { IoCopyOutline } from "react-icons/io5";
-import { splitPublicKey } from "../../../utils";
 import { useEthereumGetBalance } from "../../../hooks/ethereum";
 import { useSolanaGetBalance } from "../../../hooks/solana";
 import { useStore } from "../../../store";
@@ -27,6 +27,18 @@ export const WalletType = ({
 
   const balance =
     type === WALLET_TYPES.SOLANA ? solanaBalance : ethereumBalance;
+
+  const [balanceInUSD, setBalanceInUSD] = useState(0);
+
+  useEffect(() => {
+    convertToUsd({
+      [CURRENCY[type].toLowerCase()]: balance,
+    }).then(({ ethUsdValue, solUsdValue }) => {
+      setBalanceInUSD(
+        type === WALLET_TYPES.ETHEREUM ? ethUsdValue : solUsdValue
+      );
+    });
+  }, [type]);
 
   const { startHalf, endHalf } = splitPublicKey(publicKey);
 
@@ -73,7 +85,7 @@ export const WalletType = ({
       )}
       {showDollar && (
         <div className="">
-          <p className="text-sm text-white">${balanceInDollar.toFixed(2)}</p>
+          <p className="text-sm text-white">${balanceInUSD.toFixed(2)}</p>
           <p className="text-sm text-gray-500">${incrementAmount.toFixed(2)}</p>
         </div>
       )}
